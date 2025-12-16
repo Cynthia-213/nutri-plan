@@ -1,0 +1,33 @@
+# API Framework
+fastapi
+
+# ASGI Server
+uvicorn[standard]
+
+# Database ORM and Driver
+sqlalchemy
+pymysql
+
+# Data Validation and Settings
+pydantic
+pydantic-settings
+
+# Password Hashing
+passlib[bcrypt]
+
+# JWT Token Authentication
+python-jose[cryptography]
+
+# Required for the data import script
+pandas
+
+# AI services
+zhipuai
+
+# Email
+email-validator
+
+
+
+python-multipart
+sniffio
