@@ -12,7 +12,7 @@ class User(Base):
     email = Column(String(255), unique=True, index=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
     
-    gender = Column(Enum('male', 'female', 'other'))
+    gender = Column(Enum('male', 'female', 'unwilling_to_disclose'))
     birthdate = Column(Date)
     height_cm = Column(DECIMAL(5, 2))
     weight_kg = Column(DECIMAL(5, 2))

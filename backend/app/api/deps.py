@@ -1,3 +1,4 @@
+import logging
 from typing import Generator, Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -7,7 +8,7 @@ from app.core.config import settings
 from app.core import security
 from app.db.session import get_db
 from app.models.user import User
-from app.crud.crud_user import user_crud
+from app.crud.crud_user import user as crud_user
 from app.schemas.token import TokenData
 
 # 创建一个 OAuth2PasswordBearer 实例
@@ -36,17 +37,20 @@ def get_current_user(
     # 解码令牌
     payload = security.decode_access_token(token)
     if payload is None:
+        logging.debug("Token payload is None")
         raise credentials_exception
         
     username: str = payload.get("sub")
     if username is None:
+        logging.debug("Username not found in token payload")
         raise credentials_exception
         
     token_data = TokenData(username=username)
     
     # 从数据库获取用户
-    user = user_crud.get_user_by_username(db, username=token_data.username)
+    user = crud_user.get_user_by_username(db, username=token_data.username)
     if user is None:
+        logging.debug(f"User not found: {token_data.username}")
         raise credentials_exception
         
     return user

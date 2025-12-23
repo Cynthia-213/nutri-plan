@@ -2,9 +2,6 @@ import axios from 'axios'
 
 const apiClient = axios.create({
   baseURL: 'http://localhost:8000/api',
-  headers: {
-    'Content-Type': 'application/json'
-  }
 })
 
 apiClient.interceptors.request.use(config => {
@@ -20,7 +17,15 @@ apiClient.interceptors.request.use(config => {
 export default {
   // Auth endpoints
   login(data) {
-    return apiClient.post('/users/login/token', data)
+    return apiClient.post(
+      '/users/login/token',
+      data,
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }
+    )
   },
 
   // User endpoints
@@ -32,8 +37,21 @@ export default {
   },
 
   // Food endpoints
-  getFoods(query) {
-    return apiClient.get(`/foods/?search=${query}`)
+  getFoods(query, skip = 0, limit = 20) {
+    return apiClient.get('/foods/', {
+      params: {
+        search: query,
+        skip: skip,
+        limit: limit
+      }
+    });
+  },
+
+  createFood(data) {
+    return apiClient.post('/foods/', data)
+  },
+  updateMe(data) {
+    return apiClient.put('/users/me', data)
   },
   
   // Exercise endpoints
@@ -48,8 +66,8 @@ export default {
   logExercise(data) {
     return apiClient.post('/tracking/exercise-log/', data)
   },
-  getDailySummary(date) {
-    return apiClient.get(`/tracking/daily-summary/?date=${date}`)
+  getDailySummary(date, needAI = false) {
+    return apiClient.get(`/tracking/daily-summary/?date=${date}&need_ai=${needAI}`)
   },
   getEnergySummary(params) {
     return apiClient.get('/tracking/energy-summary/', { params });

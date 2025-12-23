@@ -1,2 +1,4 @@
 .DS_Store
 /usda_csv
+/data
+node_modules

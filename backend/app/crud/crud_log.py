@@ -40,6 +40,7 @@ class CRUDLog:
             user_id=user_id,
             exercise_id=log_in.exercise_id,
             duration_minutes=log_in.duration_minutes,
+            calories_burned=log_in.calories_burned,
             log_date=log_in.log_date
         )
         db.add(db_log)
@@ -63,4 +64,4 @@ class CRUDLog:
         ).all()
 
 # 创建一个实例以便全局使用
-log_crud = CRUDLog()
+log = CRUDLog()

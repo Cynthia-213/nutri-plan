@@ -3,8 +3,6 @@ from typing import Optional
 from datetime import date
 from enum import Enum
 
-# --- Enums for validation ---
-# These should match the enums in the database model
 class GenderEnum(str, Enum):
     male = 'male'
     female = 'female'
@@ -23,12 +21,11 @@ class GoalEnum(str, Enum):
     gain_muscle = 'gain_muscle'
 
 
-# --- Base Schema ---
-# Shared properties for a user
+# 用户共享属性
 class UserBase(BaseModel):
     email: EmailStr
     username: str
-    gender: Optional[GenderEnum] = None
+    gender: GenderEnum = None
     birthdate: Optional[date] = None
     height_cm: Optional[float] = None
     weight_kg: Optional[float] = None
@@ -36,14 +33,16 @@ class UserBase(BaseModel):
     goal: Optional[GoalEnum] = None
 
 
-# --- Create Schema ---
-# Properties required when creating a new user
+# 创建用户时所需属性
 class UserCreate(UserBase):
     password: str
 
+# 用户登录时所需属性
+class UserLogin(BaseModel):
+    username: str
+    password: str
 
-# --- Update Schema ---
-# Properties that can be updated for a user
+# 用户可更新的属性
 class UserUpdate(BaseModel):
     username: Optional[str] = None
     email: Optional[EmailStr] = None
@@ -54,9 +53,7 @@ class UserUpdate(BaseModel):
     activity_level: Optional[ActivityLevelEnum] = None
     goal: Optional[GoalEnum] = None
 
-
-# --- Database Schema ---
-# Additional properties stored in the database (like hashed_password)
+# 数据库中存储的其他属性（例如 hashed_pa​​ssword）
 class UserInDB(UserBase):
     id: int
     hashed_password: str
@@ -64,12 +61,9 @@ class UserInDB(UserBase):
     class Config:
         from_attributes = True
 
-
-# --- Response Schema ---
-# Properties to return to the client (omitting sensitive data)
+# 要返回给客户端的属性（省略敏感数据）
 class User(UserBase):
     id: int
 
     class Config:
         from_attributes = True
-
