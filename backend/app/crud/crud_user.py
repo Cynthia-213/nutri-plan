@@ -52,4 +52,4 @@ class CRUDUser:
         return db_user
 
 # 创建一个CRUDUser的实例，以便在其他地方导入和使用
-user_crud = CRUDUser()
+user = CRUDUser()

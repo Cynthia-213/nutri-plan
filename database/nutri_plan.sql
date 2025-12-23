@@ -7,12 +7,13 @@ USE nutri_plan;
 -- 用户表 (users)
 -- 存储用户的基本信息、身体数据和健康目标
 --
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `username` VARCHAR(255) NOT NULL UNIQUE COMMENT '用户名',
     `email` VARCHAR(255) NOT NULL UNIQUE COMMENT '电子邮箱',
     `hashed_password` VARCHAR(255) NOT NULL COMMENT '加密后的密码',
-    `gender` ENUM('male', 'female', 'other') COMMENT '性别',
+    `gender` ENUM('male', 'female', 'unwilling_to_disclose') COMMENT '性别',
     `birthdate` DATE COMMENT '出生日期',
     `height_cm` DECIMAL(5, 2) COMMENT '身高（厘米）',
     `weight_kg` DECIMAL(5, 2) COMMENT '体重（公斤）',
@@ -23,58 +24,12 @@ CREATE TABLE IF NOT EXISTS `users` (
 ) COMMENT='用户信息表';
 
 
-
 DROP TABLE IF EXISTS `foods`;
 
-CREATE TABLE `foods` (
-    fdc_id INT PRIMARY KEY,
-    data_type VARCHAR(255),
-    description TEXT,
-    food_category_id TEXT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-DROP TABLE IF EXISTS `food_nutrient`;
-
-CREATE TABLE `food_nutrient` (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    fdc_id INT,
-    nutrient_id INT,
-    amount DOUBLE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-DROP TABLE IF EXISTS `nutrient`;
-
-CREATE TABLE `nutrient` (
-    id INT PRIMARY KEY,
-    name VARCHAR(255),
-    unit_name VARCHAR(50)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-DROP TABLE IF EXISTS `food_portion`;
-
-CREATE TABLE `food_portion` (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    fdc_id INT,
-    gram_weight DOUBLE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-DROP TABLE IF EXISTS `food_category`;
-CREATE TABLE IF NOT EXISTS `food_category` (
-    id INT PRIMARY KEY,
-    description VARCHAR(255)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-DROP TABLE IF EXISTS `foods_information`;
---
--- 食物信息表
--- 存储从USDA等数据源导入的食物营养信息
---
-CREATE TABLE IF NOT EXISTS `foods_information` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `fdc_id` INT UNIQUE COMMENT '来源（USDA FoodData Central）的唯一ID',
-    `data_type` VARCHAR(255) COMMENT '数据类型',
-    `description` TEXT COMMENT '食物名称或描述',
-    `category` TEXT COMMENT '食物类别',
+CREATE TABLE IF NOT EXISTS `foods` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `description_zh` VARCHAR(255) COMMENT '中文食物名称或描述',
+    `description_en` VARCHAR(255) COMMENT '英文食物名称或描述',
     `energy_kcal` DECIMAL(10, 2) COMMENT '每100克所含热量（千卡）',
     `protein_g` DECIMAL(10, 2) COMMENT '每100克所含蛋白质（克）',
     `fat_g` DECIMAL(10, 2) COMMENT '每100克所含脂肪（克）',
@@ -84,69 +39,22 @@ CREATE TABLE IF NOT EXISTS `foods_information` (
     `fe_mg` DECIMAL(10, 2) COMMENT '每100克所含铁（毫克）',
     `na_mg` DECIMAL(10, 2) COMMENT '每100克所含钠（毫克）',
     `serving_size_g` DECIMAL(10, 2) DEFAULT 100.00 COMMENT '常见份量（克）',
+    `source` VARCHAR(100) COMMENT '数据来源',
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) COMMENT='食物营养信息表';
+ALTER TABLE `foods`
+ADD COLUMN `is_high_protein` BOOLEAN DEFAULT FALSE COMMENT '是否高蛋白（蛋白供能比>20%）' AFTER `protein_g`,
+ADD COLUMN `is_low_carb` BOOLEAN DEFAULT FALSE COMMENT '是否低碳水（每100g碳水<10g）' AFTER `carbohydrate_g`,
+ADD COLUMN `is_low_fat` BOOLEAN DEFAULT FALSE COMMENT '是否低脂（脂肪供能比<15%）' AFTER `fat_g`,
+ADD COLUMN `is_high_fiber` BOOLEAN DEFAULT FALSE COMMENT '是否高纤维（每100g膳食纤维>3g）' AFTER `fiber_total_dietary_g`;
 
-INSERT INTO foods_information (
-    fdc_id,
-    data_type,
-    description,
-    category,
-    energy_kcal,
-    protein_g,
-    fat_g,
-    carbohydrate_g,
-    fiber_total_dietary_g,
-    sugars_g,
-    fe_mg,
-    na_mg,
-    serving_size_g
-)
-SELECT
-    f2.fdc_id,
-    f2.data_type,
-    f2.description,
-    f2.category,
-
-    MAX(CASE WHEN fn.nutrient_id = 1008 THEN fn.amount END),
-    MAX(CASE WHEN fn.nutrient_id = 1003 THEN fn.amount END),
-    MAX(CASE WHEN fn.nutrient_id = 1004 THEN fn.amount END),
-    MAX(CASE WHEN fn.nutrient_id = 1005 THEN fn.amount END),
-    MAX(CASE WHEN fn.nutrient_id = 1079 THEN fn.amount END),
-    MAX(CASE WHEN fn.nutrient_id = 2000 THEN fn.amount END),
-    MAX(CASE WHEN fn.nutrient_id = 1089 THEN fn.amount END),
-    MAX(CASE WHEN fn.nutrient_id = 1093 THEN fn.amount END),
-
-    COALESCE(fp.gram_weight, 100)
-
-FROM (
-    SELECT
-        f.*,
-        CASE
-            WHEN f.food_category_id REGEXP '^[0-9]+$'
-                THEN fc.description
-            ELSE
-                f.food_category_id
-        END AS category
-    FROM foods f
-    LEFT JOIN food_category fc
-        ON fc.id = f.food_category_id
-       AND f.food_category_id REGEXP '^[0-9]+$'
-) f2
-
-LEFT JOIN food_nutrient fn ON f2.fdc_id = fn.fdc_id
-LEFT JOIN food_portion fp ON f2.fdc_id = fp.fdc_id
-
-WHERE f2.description IS NOT NULL
-  AND TRIM(f2.description) <> ''
-
-GROUP BY
-    f2.fdc_id,
-    f2.data_type,
-    f2.description,
-    f2.category,
-    fp.gram_weight;
+UPDATE `foods` 
+SET 
+  `is_high_protein` = IF(`energy_kcal` > 0 AND (`protein_g` * 4.0 / `energy_kcal`) > 0.2, TRUE, FALSE),
+  `is_low_carb` = IF(`carbohydrate_g` < 10, TRUE, FALSE),
+  `is_low_fat` = IF(`energy_kcal` > 0 AND (`fat_g` * 9.0 / `energy_kcal`) < 0.15, TRUE, FALSE),
+  `is_high_fiber` = IF(`fiber_total_dietary_g` > 3, TRUE, FALSE);
 
 --
 -- 运动表 (exercises)
@@ -178,15 +86,16 @@ CREATE TABLE IF NOT EXISTS `user_food_log` (
 -- 用户运动记录表 (user_exercise_log)
 -- 记录用户每日的运动活动
 --
+DROP TABLE IF EXISTS `user_exercise_log`;
 CREATE TABLE IF NOT EXISTS `user_exercise_log` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `user_id` INT NOT NULL COMMENT '逻辑外键, 关联 users.id',
     `exercise_id` INT NOT NULL COMMENT '逻辑外键, 关联 exercises.id',
     `duration_minutes` INT NOT NULL COMMENT '运动时长（分钟）',
+    `calories_burned` DECIMAL(10, 2) NOT NULL COMMENT '消耗热量（千卡）',
     `log_date` DATE NOT NULL COMMENT '记录日期',
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) COMMENT='用户每日运动记录表';
-
 
 --
 -- 插入一些常见的运动及其MET值作为初始数据

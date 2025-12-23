@@ -5,7 +5,7 @@ from .user import Base
 class Exercise(Base):
     __tablename__ = "exercises"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
     name = Column(String(255), unique=True, nullable=False)
     met_value = Column(DECIMAL(4, 2), nullable=False)
     description = Column(Text)

@@ -31,3 +31,4 @@ email-validator
 
 python-multipart
 sniffio
+tqdm

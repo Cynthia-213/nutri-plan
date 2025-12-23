@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.api import deps
-from app.crud.crud_food import food_crud
+from app.crud.crud_exercise import exercise
 from app.schemas.exercise import Exercise
 from app.db.session import get_db
 from app.models.user import User
@@ -18,5 +18,5 @@ def list_all_exercises(
     limit: int = 50,
     current_user: User = Depends(deps.get_current_active_user)
 ):
-    exercises = food_crud.list_exercises(db, skip=skip, limit=limit)
+    exercises = exercise.list_exercises(db, skip=skip, limit=limit)
     return exercises

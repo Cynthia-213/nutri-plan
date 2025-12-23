@@ -14,6 +14,7 @@ class ExerciseLogCreate(BaseModel):
     exercise_id: int
     duration_minutes: int
     log_date: date
+    calories_burned: Optional[float] = None
 
 # --- Log Response Schemas ---
 
@@ -51,6 +52,7 @@ class DailySummary(BaseModel):
     
     # Calorie summary
     bmr: float
+    tdee: float
     total_intake_kcal: float
     total_burned_kcal: float
     net_calories: float
