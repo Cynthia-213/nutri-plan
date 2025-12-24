@@ -1,3 +1,4 @@
+import json
 from fastapi import APIRouter, Depends, HTTPException
 from typing import Any
 from sqlalchemy.orm import Session
@@ -31,12 +32,28 @@ def generate_ai_menu(
             status_code=400,
             detail="Could not calculate your daily recommended intake. Please check your profile information for accuracy.",
         )
-        
-    generated_menu = menu_generator.generate_menu(
-        target_calories=recommendations.recommended_kcal,
-        target_protein=recommendations.protein_g,
-        target_fat=recommendations.fat_g,
-        target_carbs=recommendations.carbs_g,
-    )
+    for _ in range(2):  # 最多尝试 2 次
+        generated_menu = menu_generator.generate_menu(
+            db=db,
+            current_user=current_user,
+            target_calories=recommendations.recommended_kcal,
+            target_protein=recommendations.protein_g,
+            target_fat=recommendations.fat_g,
+            target_carbs=recommendations.carbs_g,
+        )
+        try:
+            ai_data = json.loads(generated_menu)
+            final_data = menu_generator.verify_and_correct_menu(db, ai_data)
+            
+            # 检查核算后的热量是否达标
+            if menu_generator.is_kcal_valid(final_data['summary'], recommendations.recommended_kcal):
+                return final_data
+        except:
+            continue
+            
+    return None  # 或返回一个预设的保底菜单
+    
+
+
     
     return generated_menu
