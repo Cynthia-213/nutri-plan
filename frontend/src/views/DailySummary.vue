@@ -93,14 +93,23 @@
       </el-row>
 
       <div class="ai-summary-box">
-        <el-card 
-          shadow="never" 
-          class="ai-card" 
-          v-loading="aiLoading"
-          element-loading-text="AI 正在深度分析数据..."
-          element-loading-background="rgba(255, 255, 255, 0.7)"
-        >
-          <div class="ai-content">
+        <el-card shadow="never" class="ai-card">
+          <div v-if="aiLoading" class="ai-loading-container">
+            <div class="ai-header-row">
+              <div class="ai-header-left">
+                <span class="ai-spark-anim">✨</span>
+                <span class="ai-title">AI 正在深度分析数据...</span>
+              </div>
+            </div>
+            <div class="custom-skeleton">
+              <div class="skeleton-line short"></div>
+              <div class="skeleton-line medium"></div>
+              <div class="skeleton-line long"></div>
+              <div class="skeleton-line medium"></div>
+            </div>
+          </div>
+
+          <div v-else class="ai-content">
             <div class="ai-header-row">
               <div class="ai-header-left">
                 <span class="ai-spark">✨</span>
@@ -121,7 +130,7 @@
                 <p class="ai-text">{{ summary.ai_summary }}</p>
               </div>
               <div v-else class="ai-empty-prompt">
-                <p class="prompt-msg">系统已整合今日 {{ summary.food_log.length + summary.exercise_log.length }} 项记录，点击按钮获取深度评估与建议</p>
+                <p class="prompt-msg">系统已整合今日 {{ summary.food_log?.length + summary.exercise_log?.length }} 项记录，点击按钮获取深度评估与建议</p>
                 <el-button class="btn-primary-gray" @click="generateAIAnalysis">
                   生成健康建议报告
                 </el-button>
@@ -336,6 +345,59 @@ onMounted(() => { getSummary(); getTrendData(); window.addEventListener('resize'
 
 .ai-text { font-size: 14px; color: #334155; line-height: 1.8; margin: 0; white-space: pre-line; }
 
+/* 容器样式 */
+.ai-loading-container {
+  padding: 10px 5px;
+}
+
+/* 星星旋转动画 */
+.ai-spark-anim {
+  font-size: 18px;
+  margin-right: 8px;
+  display: inline-block;
+  animation: spark-rotate 2s infinite ease-in-out;
+}
+
+@keyframes spark-rotate {
+  0% { transform: scale(1) rotate(0deg); opacity: 0.7; }
+  50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+  100% { transform: scale(1) rotate(360deg); opacity: 0.7; }
+}
+
+/* 骨架屏流光效果 */
+.custom-skeleton {
+  margin-top: 15px;
+}
+
+.skeleton-line {
+  height: 12px;
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+/* 错峰长度显得更像文本段落 */
+.skeleton-line.short { width: 40%; }
+.skeleton-line.medium { width: 85%; }
+.skeleton-line.long { width: 100%; }
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* 给整个卡片增加一个微弱的呼吸边框色变化 */
+.ai-card.is-loading {
+  animation: border-pulse 2s infinite;
+}
+
+@keyframes border-pulse {
+  0% { border-left-color: #838B8B; }
+  50% { border-left-color: #cbd5e1; }
+  100% { border-left-color: #838B8B; }
+}
 /* 图表区域 */
 .chart-card { border-radius: 24px; border: 1px solid #f1f5f9; padding: 20px; }
 .chart-filter { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 0 10px; }

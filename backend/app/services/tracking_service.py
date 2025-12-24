@@ -105,7 +105,7 @@ class TrackingService:
                     - 脂肪: {total_fat_g:.1f} 克 (推荐: {recommendations.fat_g:.1f} 克)
                     - 碳水化合物: {total_carbs_g:.1f} 克 (推荐: {recommendations.carbs_g:.1f} 克)
                     
-                    - 饮食记录: {', '.join([f'{item.food.description}({item.serving_grams}克)' for item in food_logs]) if food_logs else '无'}
+                    - 饮食记录: {', '.join([f'{item.food.description_zh}({item.serving_grams}克)' for item in food_logs]) if food_logs else '无'}
                     - 运动记录: {', '.join([f'{item.exercise.name}({item.duration_minutes}分钟)' for item in exercise_logs]) if exercise_logs else '无'}
 
                     请根据以上信息，生成一段大约200-250字的总结和建议。
