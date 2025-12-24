@@ -40,14 +40,13 @@ CREATE TABLE IF NOT EXISTS `foods` (
     `na_mg` DECIMAL(10, 2) COMMENT '每100克所含钠（毫克）',
     `serving_size_g` DECIMAL(10, 2) DEFAULT 100.00 COMMENT '常见份量（克）',
     `source` VARCHAR(100) COMMENT '数据来源',
+    `is_high_protein` BOOLEAN DEFAULT FALSE COMMENT '是否高蛋白（蛋白供能比>20%）' AFTER `protein_g`,
+    `is_low_carb` BOOLEAN DEFAULT FALSE COMMENT '是否低碳水（每100g碳水<10g）' AFTER `carbohydrate_g`,
+    `is_low_fat` BOOLEAN DEFAULT FALSE COMMENT '是否低脂（脂肪供能比<15%）' AFTER `fat_g`,
+    `is_high_fiber` BOOLEAN DEFAULT FALSE COMMENT '是否高纤维（每100g膳食纤维>3g）' AFTER `fiber_total_dietary_g`,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) COMMENT='食物营养信息表';
-ALTER TABLE `foods`
-ADD COLUMN `is_high_protein` BOOLEAN DEFAULT FALSE COMMENT '是否高蛋白（蛋白供能比>20%）' AFTER `protein_g`,
-ADD COLUMN `is_low_carb` BOOLEAN DEFAULT FALSE COMMENT '是否低碳水（每100g碳水<10g）' AFTER `carbohydrate_g`,
-ADD COLUMN `is_low_fat` BOOLEAN DEFAULT FALSE COMMENT '是否低脂（脂肪供能比<15%）' AFTER `fat_g`,
-ADD COLUMN `is_high_fiber` BOOLEAN DEFAULT FALSE COMMENT '是否高纤维（每100g膳食纤维>3g）' AFTER `fiber_total_dietary_g`;
 
 UPDATE `foods` 
 SET 
