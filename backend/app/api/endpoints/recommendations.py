@@ -25,7 +25,11 @@ def generate_ai_menu(
             detail="Cannot generate menu, your profile is incomplete. Please fill in your height, weight, birthdate, and gender on the profile page.",
         )
 
-    recommendations = RecommendationService.get_calorie_recommendation(current_user)
+    recommendations = RecommendationService.get_calorie_recommendation(
+        current_user, 
+        db=db, 
+        enable_auto_adjustment=True
+    )
     
     if recommendations.recommended_kcal == 0:
         raise HTTPException(
@@ -52,8 +56,3 @@ def generate_ai_menu(
             continue
             
     return None  # 或返回一个预设的保底菜单
-    
-
-
-    
-    return generated_menu

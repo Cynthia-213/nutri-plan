@@ -1,6 +1,6 @@
 import logging
 from typing import Generator, Optional
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
@@ -66,3 +66,28 @@ def get_current_active_user(
     # if not current_user.is_active:
     #     raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
+
+
+def get_current_active_user_optional(
+    request: Request,
+    db: Session = Depends(get_db),
+) -> Optional[User]:
+    """
+    可选的用户依赖项，如果用户已登录则返回用户，否则返回 None
+    用于允许未登录用户访问某些接口（如公共博客列表）
+    """
+    try:
+        authorization = request.headers.get("Authorization")
+        if not authorization or not authorization.startswith("Bearer "):
+            return None
+        token = authorization.replace("Bearer ", "")
+        payload = security.decode_access_token(token)
+        if payload is None:
+            return None
+        username: str = payload.get("sub")
+        if username is None:
+            return None
+        user = crud_user.get_user_by_username(db, username=username)
+        return user
+    except Exception:
+        return None

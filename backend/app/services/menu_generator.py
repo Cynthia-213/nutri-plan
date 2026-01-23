@@ -14,8 +14,8 @@ ratios = {
 class MenuGeneratorService:
     @staticmethod
     def generate_menu(db, current_user, target_calories: float, target_protein: float, target_fat: float, target_carbs: float) -> Dict[str, Any]:
-        # 调用刚才写的 CRUD 方法
-        candidate_list = food.get_ai_candidates(db, preference=current_user.goal)
+        # 调用刚才写的 CRUD 方法，传入 user_id 以排除禁止的食物
+        candidate_list = food.get_ai_candidates(db, preference=current_user.goal, user_id=current_user.id)
         
         # 极简化数据：只给 AI 必要的字段，节省 Token
         compact_foods = []
@@ -114,7 +114,7 @@ class MenuGeneratorService:
         
         client = zhipuai.ZhipuAI(api_key=settings.ZHIPU_API_KEY)
         response = client.chat.completions.create(
-            model="glm-4",
+            model="glm-4.6",
             messages=[
                 {"role": "user", "content": prompt}
             ],

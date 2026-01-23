@@ -32,3 +32,5 @@ email-validator
 python-multipart
 sniffio
 tqdm
+qcloud_cos
+redis

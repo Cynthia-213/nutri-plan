@@ -1,0 +1,129 @@
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+    }
+  },
+  "pages": [
+    {
+      "path": "pages/home/home",
+      "style": {
+        "navigationBarTitleText": "首页",
+        "navigationStyle": "custom",
+        "navigationBarBackgroundColor": "#f8fafc",
+        "navigationBarTextStyle": "black"
+      }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "navigationStyle": "custom",
+        "navigationBarBackgroundColor": "#f5f7fa",
+        "navigationBarTextStyle": "black"
+      }
+    },
+    {
+      "path": "pages/register/register",
+      "style": {
+        "navigationBarTitleText": "注册",
+        "navigationStyle": "custom",
+        "navigationBarBackgroundColor": "#f5f7fa",
+        "navigationBarTextStyle": "black"
+      }
+    },
+    {
+      "path": "pages/user-me/user-me",
+      "style": {
+        "navigationBarTitleText": "个人中心",
+        "navigationStyle": "custom",
+        "navigationBarBackgroundColor": "#f8fafc",
+        "navigationBarTextStyle": "black"
+      }
+    },
+    {
+      "path": "pages/food-tracker/food-tracker",
+      "style": {
+        "navigationBarTitleText": "食物追踪",
+        "navigationStyle": "custom",
+        "navigationBarBackgroundColor": "#f8fafc",
+        "navigationBarTextStyle": "black"
+      }
+    },
+    {
+      "path": "pages/exercise-tracker/exercise-tracker",
+      "style": {
+        "navigationBarTitleText": "运动追踪",
+        "navigationStyle": "custom",
+        "navigationBarBackgroundColor": "#f8fafc",
+        "navigationBarTextStyle": "black"
+      }
+    },
+    {
+      "path": "pages/daily-summary/daily-summary",
+      "style": {
+        "navigationBarTitleText": "每日总结",
+        "navigationStyle": "custom",
+        "navigationBarBackgroundColor": "#f8fafc",
+        "navigationBarTextStyle": "black"
+      }
+    },
+    {
+      "path": "pages/menu-suggestion/menu-suggestion",
+      "style": {
+        "navigationBarTitleText": "菜单建议",
+        "navigationStyle": "custom",
+        "navigationBarBackgroundColor": "#f8fafc",
+        "navigationBarTextStyle": "black"
+      }
+    },
+    {
+      "path": "pages/community/community",
+      "style": {
+        "navigationBarTitleText": "社区",
+        "navigationStyle": "custom",
+        "navigationBarBackgroundColor": "#f8fafc",
+        "navigationBarTextStyle": "black"
+      }
+    },
+    {
+      "path": "pages/ranking/ranking",
+      "style": {
+        "navigationBarTitleText": "排行榜",
+        "navigationStyle": "custom",
+        "navigationBarBackgroundColor": "#f8fafc",
+        "navigationBarTextStyle": "black"
+      }
+    },
+    {
+      "path": "pages/notifications/notifications",
+      "style": {
+        "navigationBarTitleText": "全部互动消息",
+        "navigationStyle": "custom",
+        "navigationBarBackgroundColor": "#fff",
+        "navigationBarTextStyle": "black"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "营养计划",
+    "navigationBarBackgroundColor": "#f8fafc",
+    "backgroundColor": "#f8fafc",
+    "app-plus": {
+      "titleNView": false
+    }
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#838B8B",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": []
+  },
+  "condition": {
+    "current": 0,
+    "list": []
+  }
+}

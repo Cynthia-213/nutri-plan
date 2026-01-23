@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DECIMAL, Date, TIMESTAMP, text, ForeignKey, Float
+from sqlalchemy import Column, Integer, DECIMAL, Date, TIMESTAMP, text, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from .user import Base
 from .food import Food
@@ -11,6 +11,8 @@ class UserFoodLog(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     food_id = Column(Integer, ForeignKey("foods.id"), nullable=False)
     serving_grams = Column(DECIMAL(10, 2), nullable=False)
+    meal_type = Column(Enum('breakfast', 'lunch', 'dinner', 'snack'), nullable=False)
+    total_calories = Column(DECIMAL(8, 2))
     log_date = Column(Date, nullable=False)
     
     created_at = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"))
@@ -26,7 +28,7 @@ class UserExerciseLog(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     exercise_id = Column(Integer, ForeignKey("exercises.id"), nullable=False)
     duration_minutes = Column(Integer, nullable=False)
-    calories_burned = Column(Float, nullable=True)
+    calories_burned = Column(DECIMAL(7, 2), nullable=False)
     log_date = Column(Date, nullable=False)
 
     created_at = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"))

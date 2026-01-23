@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BIGINT, String, DECIMAL, TIMESTAMP, text
+from sqlalchemy import Boolean, Column, BIGINT, String, DECIMAL, TIMESTAMP, text
 from sqlalchemy.orm import relationship
 from .user import Base
 
@@ -17,6 +17,10 @@ class Food(Base):
     sugars_g = Column(DECIMAL(10, 2))
     fe_mg = Column(DECIMAL(10, 2))
     na_mg = Column(DECIMAL(10, 2))
+    is_high_protein = Column(Boolean, default=False)
+    is_low_carb = Column(Boolean, default=False)
+    is_high_fiber = Column(Boolean, default=False)
+    is_low_fat = Column(Boolean, default=False)
     
     serving_size_g = Column(DECIMAL(10, 2), server_default='100.00')
 

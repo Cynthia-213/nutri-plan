@@ -12,6 +12,7 @@ from app.crud.crud_food import food
 from app.crud.crud_exercise import exercise
 from app.schemas import log as log_schema
 from app.services.tracking_service import tracking_service
+from app.services.ranking_service import ranking_service
 
 router = APIRouter()
 
@@ -40,13 +41,29 @@ def log_exercise_activity(
     current_user: User = Depends(deps.get_current_active_user)
 ) -> Any:
     """
-    记录运动活动
+    记录运动活动，并实时更新排行榜
     """
     cur_exercise = exercise.get_exercise_by_id(db, exercise_id=log_in.exercise_id)
     if not cur_exercise:
         raise HTTPException(status_code=404, detail="Exercise not found.")
 
     exercise_log = log.create_exercise_log(db, user_id=current_user.id, log_in=log_in)
+    
+    # 实时更新排行榜
+    try:
+        calories = float(exercise_log.calories_burned)
+        user_identity = current_user.identity if hasattr(current_user, 'identity') else 'office_worker'
+        ranking_service.update_ranking(
+            user_id=current_user.id,
+            calories=calories,
+            user_identity=user_identity,
+            log_date=log_in.log_date
+        )
+    except Exception as e:
+        # 排行榜更新失败不应该影响运动记录的正常创建
+        # 可以记录日志，但不抛出异常
+        print(f"Failed to update ranking: {e}")
+    
     return exercise_log
 
 
@@ -54,8 +71,7 @@ def log_exercise_activity(
 def get_daily_summary(
     date: date = Query(..., description="The date for the summary, in YYYY-MM-DD format"),
     db: Session = Depends(get_db),
-    current_user: User = Depends(deps.get_current_active_user),
-    need_ai: bool = Query(False, description="Whether to include AI-generated insights")
+    current_user: User = Depends(deps.get_current_active_user)
 ) -> Any:
     """
     每日总结
@@ -66,9 +82,29 @@ def get_daily_summary(
             detail="User profile is incomplete. Please provide height, weight, birthdate, and gender to get a summary.",
         )
 
-    daliy_summary = tracking_service.get_daily_summary(db, user=current_user, log_date=date, need_ai=need_ai)
+    daliy_summary = tracking_service.get_daily_summary(db, user=current_user, log_date=date)
 
     return daliy_summary
+
+
+@router.post("/ai-summary/", response_model=dict)
+def generate_ai_summary(
+    date: date = Query(..., description="The date for AI analysis, in YYYY-MM-DD format"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(deps.get_current_active_user)
+) -> Any:
+    """
+    生成AI健康建议（独立接口）
+    """
+    if not all([current_user.weight_kg, current_user.height_cm, current_user.birthdate, current_user.gender]):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User profile is incomplete. Please provide height, weight, birthdate, and gender to get AI analysis.",
+        )
+
+    ai_summary = tracking_service.generate_ai_summary(db, user=current_user, log_date=date)
+    
+    return {"ai_summary": ai_summary}
 
     
 @router.get("/energy-summary/", response_model=log_schema.EnergySummary)

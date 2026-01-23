@@ -1,21 +1,35 @@
 {
   "name": "nutri-plan-frontend",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
+  "description": "营养计划管理应用 - UniApp版本",
+  "main": "main.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev:h5": "uni",
+    "dev:mp-weixin": "uni -p mp-weixin",
+    "dev:app": "uni -p app",
+    "build:h5": "uni build",
+    "build:mp-weixin": "uni build -p mp-weixin",
+    "build:app": "uni build -p app"
   },
   "dependencies": {
-    "axios": "^1.7.2",
-    "echarts": "^6.0.0",
-    "element-plus": "^2.7.7",
+    "@dcloudio/uni-app": "vue3",
+    "@dcloudio/uni-app-plus": "vue3",
+    "@dcloudio/uni-components": "vue3",
+    "@dcloudio/uni-h5": "vue3",
+    "@dcloudio/uni-mp-weixin": "vue3",
+    "@dcloudio/uni-ui": "^1.5.11",
+    "echarts": "^5.5.0",
     "vue": "^3.4.31",
-    "vue-router": "^4.4.0"
+    "zrender": "^5.4.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.5",
-    "vite": "^5.3.3"
-  }
+    "@dcloudio/types": "^3.4.8",
+    "@dcloudio/vite-plugin-uni": "vue3",
+    "sass": "^1.69.5",
+    "vite": "^5.0.0"
+  },
+  "browserslist": [
+    "Android >= 4.4",
+    "ios >= 9"
+  ]
 }

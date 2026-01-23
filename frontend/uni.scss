@@ -1,0 +1,97 @@
+/**
+ * 全局样式文件
+ */
+
+/* 全局变量 */
+$primary-color: #838B8B;
+$bg-color: #f8fafc;
+$text-color: #1e293b;
+$text-secondary: #94a3b8;
+
+/* 基础重置 */
+page {
+  background-color: $bg-color;
+  color: $text-color;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 容器样式 */
+.container {
+  padding: 16px;
+  min-height: 100vh;
+}
+
+/* 卡片样式 */
+.card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  margin-bottom: 16px;
+}
+
+/* 按钮样式 */
+.btn-primary {
+  background-color: $primary-color;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: $primary-color;
+  border: 2px solid $primary-color;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* 输入框样式 */
+.input-wrapper {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+}
+
+/* 工具类 */
+.text-center {
+  text-align: center;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-center {
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mt-16 {
+  margin-top: 16px;
+}
+
+.mb-16 {
+  margin-bottom: 16px;
+}
+
+.p-16 {
+  padding: 16px;
+}

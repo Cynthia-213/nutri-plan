@@ -37,3 +37,24 @@ class FoodCreate(FoodBase):
 # 更新模型
 class FoodUpdate(FoodBase):
     pass
+
+# 禁止食物相关模型
+class BannedFoodCreate(BaseModel):
+    food_id: int
+
+class BannedFood(BaseModel):
+    id: int
+    user_id: int
+    food_id: int
+    food: Optional[Food] = None  # 关联的食物信息
+    created_at: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
+
+class BannedFoodList(BaseModel):
+    items: List[BannedFood]
+    total: int
+    
+    class Config:
+        from_attributes = True

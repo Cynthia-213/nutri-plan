@@ -9,6 +9,8 @@ class FoodLogCreate(BaseModel):
     food_id: int
     serving_grams: float
     log_date: date
+    meal_type: str
+    total_calories: Optional[float] = None
 
 class ExerciseLogCreate(BaseModel):
     exercise_id: int
@@ -37,6 +39,7 @@ class ExerciseLogInDB(ExerciseLogCreate):
 class LoggedFoodItem(BaseModel):
     food: Food
     serving_grams: float
+    meal_type: str
     total_calories: float
     total_protein: float
     total_fat: float
@@ -54,6 +57,7 @@ class DailySummary(BaseModel):
     bmr: float
     tdee: float
     total_intake_kcal: float
+    total_exercise_burned: float
     total_burned_kcal: float
     net_calories: float
     
@@ -78,9 +82,16 @@ class DailySummary(BaseModel):
 class CalorieRecommendation(BaseModel):
     goal: str
     recommended_kcal: float
+    min_kcal: Optional[float] = None  # 最低热量
+    max_kcal: Optional[float] = None  # 最高热量
     protein_g: float
+    protein_min_g: Optional[float] = None  # 蛋白质最低值
+    protein_max_g: Optional[float] = None  # 蛋白质最高值
     fat_g: float
+    fat_min_g: Optional[float] = None  # 脂肪最低值
+    fat_max_g: Optional[float] = None  # 脂肪最高值
     carbs_g: float
+    range_description: Optional[str] = None  # 区间说明
 
 # --- Energy Summary Schemas ---
 
@@ -90,3 +101,4 @@ class EnergySummaryItem(BaseModel):
 
 class EnergySummary(BaseModel):
     data: List[EnergySummaryItem]
+    bmr: float

@@ -28,6 +28,19 @@ class Settings(BaseSettings):
     GLM_KEY: Optional[str] = None
     ZHIPU_API_KEY: Optional[str] = None
 
+    # COS settings
+    COS_SECRET_ID: Optional[str] = None
+    COS_SECRET_KEY: Optional[str] = None
+    COS_BUCKET: Optional[str] = None
+    COS_REGION: Optional[str] = None
+    COS_BASE_URL: Optional[str] = None
+    
+    # Redis settings
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: int = 6379
+    REDIS_DB: int = 0
+    REDIS_PASSWORD: Optional[str] = None
+
     class Config:
         env_file = env_path
         env_file_encoding = 'utf-8'

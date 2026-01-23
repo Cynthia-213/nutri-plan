@@ -5,6 +5,7 @@ import random
 
 from app.models.food import Food
 from app.schemas.food import FoodCreate
+from app.crud.crud_banned_food import banned_food
 
 class CRUDFood:
     def get_food_by_id(self, db: Session, *, food_id: int) -> Optional[Food]:
@@ -20,9 +21,10 @@ class CRUDFood:
             )
         ).offset(skip).limit(limit).all()
     
-    def get_ai_candidates(self, db: Session, *, preference: str = "balanced") -> List[Food]:
+    def get_ai_candidates(self, db: Session, *, preference: str = "balanced", user_id: Optional[int] = None) -> List[Food]:
         """
         根据用户偏好获取约 150 种候选食物
+        如果提供了 user_id，会排除该用户禁止的食物
         """
         configs = {
             "high_protein": {"protein": 70, "carbs": 30, "veg": 50},
@@ -33,32 +35,27 @@ class CRUDFood:
         cfg = configs.get(preference, configs["balanced"])
         candidates = []
 
+        # 获取用户禁止的食物ID列表
+        banned_food_ids = []
+        if user_id:
+            banned_food_ids = banned_food.get_banned_food_ids(db, user_id=user_id)
+
+        # 构建基础查询，排除禁止的食物
+        base_query = db.query(Food)
+        if banned_food_ids:
+            base_query = base_query.filter(~Food.id.in_(banned_food_ids))
+
         # 1. 采样高蛋白食材 (肉蛋奶鱼)
-        protein_foods = (
-            db.query(Food)
-            .filter(Food.is_high_protein == True)
-            .order_by(func.rand())
-            .limit(cfg["protein"])
-            .all()
-        )
+        protein_query = base_query.filter(Food.is_high_protein == True)
+        protein_foods = protein_query.order_by(func.rand()).limit(cfg["protein"]).all()
         
         # 2. 采样主食/碳水 (且相对低脂)
-        carb_foods = (
-            db.query(Food)
-            .filter(Food.carbohydrate_g > 20, Food.is_low_fat == True)
-            .order_by(func.rand())
-            .limit(cfg["carbs"])
-            .all()
-        )
+        carb_query = base_query.filter(Food.carbohydrate_g > 20, Food.is_low_fat == True)
+        carb_foods = carb_query.order_by(func.rand()).limit(cfg["carbs"]).all()
         
         # 3. 采样蔬菜/高纤维
-        veg_foods = (
-            db.query(Food)
-            .filter(or_(Food.is_high_fiber == True, Food.description_zh.contains("菜")))
-            .order_by(func.rand())
-            .limit(cfg["veg"])
-            .all()
-        )
+        veg_query = base_query.filter(or_(Food.is_high_fiber == True, Food.description_zh.contains("菜")))
+        veg_foods = veg_query.order_by(func.rand()).limit(cfg["veg"]).all()
 
         # 合并所有食材
         candidates = protein_foods + carb_foods + veg_foods
