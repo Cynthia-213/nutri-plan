@@ -1,3 +1,154 @@
+# ============================================
+# 系统文件
+# ============================================
 .DS_Store
-/usda_csv
-node_modules
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ============================================
+# Python 后端
+# ============================================
+# Python 缓存文件
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Python 虚拟环境
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+
+# Python 环境变量
+.env
+.env.local
+.env.*.local
+backend/.env
+backend/.env.local
+
+# Python 分发/打包
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ============================================
+# Node.js / UniApp 前端
+# ============================================
+# 依赖目录
+node_modules/
+frontend/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# 构建产物
+dist/
+frontend/dist/
+unpackage/
+frontend/unpackage/
+build/
+frontend/build/
+
+# 包管理器锁文件
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# 编辑器配置
+.vscode/
+.idea/
+.hbuilderx/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ============================================
+# 日志文件
+# ============================================
+*.log
+logs/
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# ============================================
+# 临时文件
+# ============================================
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+.cache/
+
+# ============================================
+# 数据文件
+# ============================================
+/data/
+/usda_csv/
+
+# ============================================
+# 操作系统
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# 测试覆盖率
+coverage/
+.nyc_output/
+
+# 文档构建
+docs/
